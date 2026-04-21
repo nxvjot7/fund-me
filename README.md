@@ -91,8 +91,6 @@ Both functions reset the funders list after withdrawing.
 
 ## 🗺️ Workflow Diagram
 
-<div align="center">
-  
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FUND-ME FLOW                         │
@@ -150,7 +148,6 @@ Both functions reset the funders list after withdrawing.
   │     Reject if below $5 minimum             │
   └────────────────────────────────────────────┘
 ```
-</div>
 
 ---
 
