@@ -17,7 +17,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 contract MockV3Aggregator is AggregatorV3Interface {
     uint256 public constant version = 4; //setting version is 4, nothing logical just copying as latest version of real chainlink price feed is v4
 
-    uint8 public decimals; 
+    uint8 public decimals;
     int256 public latestAnswer;
     uint256 public latestTimestamp;
     uint256 public latestRound;
@@ -26,16 +26,17 @@ contract MockV3Aggregator is AggregatorV3Interface {
     mapping(uint256 => uint256) public getTimestamp;
     mapping(uint256 => uint256) private getStartedAt;
 
-    constructor(uint8 _decimals, int256 _initialAnswer) { //asking for decimals and initial answer when we deploy this contract, which are being passed by helperconfig if it detects anvil chain it passes 8 to decimals and 2000e8 to initital price take it as (2000$)
+    constructor(uint8 _decimals, int256 _initialAnswer) {
+        //asking for decimals and initial answer when we deploy this contract, which are being passed by helperconfig if it detects anvil chain it passes 8 to decimals and 2000e8 to initital price take it as (2000$)
         decimals = _decimals;
-        updateAnswer(_initialAnswer); //calling updateAnswer to 
+        updateAnswer(_initialAnswer); //calling updateAnswer to
     }
 
     function updateAnswer(int256 _answer) public {
         latestAnswer = _answer; //2000e8 that we passed
         latestTimestamp = block.timestamp;
         latestRound++; //for now it become 1, increasing round by 1 whenever we update answer
-        getAnswer[latestRound] = _answer;  //getAnswer[1] = 2000e8 just a mapping 
+        getAnswer[latestRound] = _answer; //getAnswer[1] = 2000e8 just a mapping
         getTimestamp[latestRound] = block.timestamp;
         getStartedAt[latestRound] = block.timestamp;
     }

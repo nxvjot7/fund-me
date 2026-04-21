@@ -4,10 +4,9 @@ pragma solidity ^0.8.18;
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {PriceConverter} from "./PriceConverter.sol";
 
-error FundMe__NotOwner(); //creating custom error 
+error FundMe__NotOwner(); //creating custom error
 
 contract FundMe {
-
     using PriceConverter for uint256; //uint256 have all functions of PriceConvertor.sol
 
     mapping(address => uint256) private s_addressToAmountFunded; //mapping of address to amount
@@ -17,32 +16,38 @@ contract FundMe {
     uint256 public constant MINIMUM_USD = 5e18; // 5e18 == 5,000,000,000,000,000,000 which is gwei value for 5 ether
     AggregatorV3Interface public s_priceFeed; // pricefeed variable in storage
 
-    constructor(address priceFeed) { //asking for pricefeed address even before deployment of contract
+    constructor(address priceFeed) {
+        //asking for pricefeed address even before deployment of contract
         i_owner = msg.sender; //setting owner as the one who deploys the contract
         s_priceFeed = AggregatorV3Interface(priceFeed); // //storing pricefeed in storage variable
     }
 
-    function fund() public payable { 
+    function fund() public payable {
         require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!"); //calling getConversionRate() of PriceConvertor.sol and passing msg.value as first parameter and pricefeed as second parameter
         s_addressToAmountFunded[msg.sender] += msg.value; //setting msg.sender as key and msg.value as value in mapping, adding msg.value if he already have some funds in mapping (incase)
         s_funders.push(msg.sender); //pushing funder to array
     }
 
-    function getVersion() public view returns (uint256) { 
-       return s_priceFeed.version(); //calling version, returns version() function's output
+    function getVersion() public view returns (uint256) {
+        return s_priceFeed.version(); //calling version, returns version() function's output
     }
 
-    modifier onlyOwner() { //seting onlyOwner modifier because we have to use this alot of time, its better to use modifier than writing this condition again and again in all the code
+    modifier onlyOwner() {
+        //seting onlyOwner modifier because we have to use this alot of time, its better to use modifier than writing this condition again and again in all the code
         if (msg.sender != i_owner) revert FundMe__NotOwner(); //if msg.sender is not i_owner then revert and throw this custom error.
-        _;  //start piece of code from here, if not reverted by above condition
+        _; //start piece of code from here, if not reverted by above condition
     }
 
-         function withdrawCheaper() public onlyOwner { 
-        uint fundersLength = s_funders.length; //
-        
-    for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) { //Reading from storage after each loop is expensive, so we stored it in a memory variable and the loop reads from it only once and stores it in stack (temp storage) which saves gas
-         address funder = s_funders[funderIndex]; //going through each index of funders array and storing address it gives in in funder through each iteration
-         s_addressToAmountFunded[funder] = 0; //clearing the amount that funder funded
+    function withdrawCheaper() public onlyOwner {
+        uint256 fundersLength = s_funders.length; //
+
+        for (
+            uint256 funderIndex = 0; //Reading from storage after each loop is expensive, so we stored it in a memory variable and the loop reads from it only once and stores it in stack (temp storage) which saves gas
+            funderIndex < fundersLength;
+            funderIndex++
+        ) {
+            address funder = s_funders[funderIndex]; //going through each index of funders array and storing address it gives in in funder through each iteration
+            s_addressToAmountFunded[funder] = 0; //clearing the amount that funder funded
         }
 
         s_funders = new address[](0); //overwriting array with new empty
@@ -99,8 +104,6 @@ contract FundMe {
         return i_owner;
     }
 }
-
-
 
 // Concepts we didn't cover yet (will cover in later sections)
 // 1. Enum

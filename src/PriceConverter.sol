@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 //this is a library, its purpose is to do maths and give us ethAmountInUSd
 
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol"; 
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 // Why is this a library and not abstract?
 // Why not an interface?
@@ -12,7 +12,7 @@ library PriceConverter {
     function getPrice(AggregatorV3Interface priceFeed) internal view returns (uint256) {
         // Sepolia ETH / USD Address
         // https://docs.chain.link/data-feeds/price-feeds/addresses
-        (, int256 answer, , , ) = priceFeed.latestRoundData();
+        (, int256 answer,,,) = priceFeed.latestRoundData();
         // ETH/USD rate in 18 digit
         return uint256(answer * 10000000000);
     }
