@@ -8,6 +8,8 @@
 ██║     ╚██████╔╝██║ ╚████║██████╔╝      ██║ ╚═╝ ██║███████╗
 ╚═╝      ╚═════╝ ╚═╝  ╚═══╝╚═════╝       ╚═╝     ╚═╝╚══════╝
 ```
+</div>
+<div align="center">
 
 **A decentralized crowdfunding smart contract built with Solidity & Foundry.**  
 *Trustless. Transparent. Immutable.*
@@ -89,6 +91,8 @@ Both functions reset the funders list after withdrawing.
 
 ## 🗺️ Workflow Diagram
 
+<div align="center">
+  
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FUND-ME FLOW                         │
@@ -146,6 +150,7 @@ Both functions reset the funders list after withdrawing.
   │     Reject if below $5 minimum             │
   └────────────────────────────────────────────┘
 ```
+</div>
 
 ---
 
@@ -542,6 +547,9 @@ fund-me/
 ║                                              ║
 ╚══════════════════════════════════════════════╝
  ```
+</div>
+
+<div align="center">
 ║  SPECIAL THANKS TO <a href="https://github.com/patrickalphac">@patrickalphac</a>  ║
 
 [![GitHub](https://img.shields.io/badge/GitHub-nxvjot7-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nxvjot7)
@@ -557,6 +565,6 @@ fund-me/
 
 ---
 
-<b>~ Ghost was here ;</b>
+<b><i>~ Ghost was here ;</b></i>
 
 </div>
