@@ -5,7 +5,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 import {PriceConverter} from "./PriceConverter.sol";
 
 error FundMe__NotOwner(); //creating custom error
-error FundMe__InvalidPriceFeed(); 
+error FundMe__InvalidPriceFeed();
 
 contract FundMe {
     using PriceConverter for uint256; //uint256 have all functions of PriceConvertor.sol
@@ -18,19 +18,20 @@ contract FundMe {
     AggregatorV3Interface private s_priceFeed; // should be private
 
     constructor(address priceFeed) {
-        if (priceFeed == address(0)) revert FundMe__InvalidPriceFeed(); // validation 
+        if (priceFeed == address(0)) revert FundMe__InvalidPriceFeed(); // validation
         //asking for pricefeed address even before deployment of contract
         i_owner = msg.sender; //setting owner as the one who deploys the contract
         s_priceFeed = AggregatorV3Interface(priceFeed); // //storing pricefeed in storage variable
     }
 
     function fund() public payable {
-    require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
-    if (s_addressToAmountFunded[msg.sender] == 0) {  // push only at first tym 
-        s_funders.push(msg.sender);
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
+        if (s_addressToAmountFunded[msg.sender] == 0) {
+            // push only at first tym
+            s_funders.push(msg.sender);
+        }
+        s_addressToAmountFunded[msg.sender] += msg.value;
     }
-    s_addressToAmountFunded[msg.sender] += msg.value;
-}
 
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version(); //calling version, returns version() function's output
