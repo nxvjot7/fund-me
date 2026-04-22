@@ -46,7 +46,7 @@ contract FundMe {
     function withdraw() public onlyOwner {
         uint256 fundersLength = s_funders.length; //storing it once function is called
 
-        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++){
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex]; //going through index of funders array and storing address it gives in funder through each iteration
             s_addressToAmountFunded[funder] = 0; //clearing the amount that this funder has funded
         }
