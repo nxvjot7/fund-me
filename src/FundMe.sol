@@ -23,10 +23,12 @@ contract FundMe {
     }
 
     function fund() public payable {
-        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!"); //calling getConversionRate() of PriceConvertor.sol and passing msg.value as first parameter and pricefeed as second parameter
-        s_addressToAmountFunded[msg.sender] += msg.value; //setting msg.sender as key and msg.value as value in mapping, adding msg.value if he already have some funds in mapping (incase)
-        s_funders.push(msg.sender); //pushing funder to array
+    require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
+    if (s_addressToAmountFunded[msg.sender] == 0) {  // push only at first tym 
+        s_funders.push(msg.sender);
     }
+    s_addressToAmountFunded[msg.sender] += msg.value;
+}
 
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version(); //calling version, returns version() function's output
