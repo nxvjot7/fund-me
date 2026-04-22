@@ -28,7 +28,7 @@ contract FundMeTest is Test {
     }
 
     function testOwnerisMsgSender() external view {
-        assertEq(fundMe.GetOwner(), msg.sender); //calling GetOwner function of fundMe contract and checking if it is same as msg.sender now, passes if equal, fails if not equal
+        assertEq(fundMe.getOwner(), msg.sender); //calling GetOwner function of fundMe contract and checking if it is same as msg.sender now, passes if equal, fails if not equal
     }
 
     function testPriceFeedVersion() external view {
@@ -46,14 +46,14 @@ contract FundMeTest is Test {
         vm.prank(USER); //TELLS TO SEND NEXT TX FROM THIS ADDRESS
         fundMe.fund{value: SEND_VALUE}(); //calling fund() of fundMe contract and sending 2 ether.
 
-        uint256 amountFunded = fundMe.GetAddressToAmountFunded(USER); //checking mapping of address(USER) how much value it have, and storing it in amountfunded variable
+        uint256 amountFunded = fundMe.getAddressToAmountFunded(USER); //checking mapping of address(USER) how much value it have, and storing it in amountfunded variable
         assertEq(amountFunded, SEND_VALUE); //checking if amountFunded is equals to SEND_VALUE (2 ether), if yes then test passed, if not then test failed
     }
 
     function testAddsFunderstoFundersArray() public {
         vm.prank(USER); //tells to send next transaction from USER address
         fundMe.fund{value: SEND_VALUE}(); //funded by "USER" with 2 ether(SEND_VALUE)
-        address funder = fundMe.GetFunders(0); //checking array at zero index, and storing its address in funder variable
+        address funder = fundMe.getFunders(0); //checking array at zero index, and storing its address in funder variable
         assertEq(funder, USER); //checking if funder is Same as USER, if yes then test passed, if not then test failed
     }
 
@@ -72,15 +72,15 @@ contract FundMeTest is Test {
 
     function testWithdrawWithASingleFunder() public funded {
         //arrange
-        uint256 startingOwnerBalance = fundMe.GetOwner().balance; //storing starting balance of owner before withdraw happens
+        uint256 startingOwnerBalance = fundMe.getOwner().balance; //storing starting balance of owner before withdraw happens
         uint256 startingFundMeBalance = address(fundMe).balance; //storing balance of fundMe contract before withdraw happens
 
         //Act
-        vm.prank(fundMe.GetOwner()); //telling to do next transaction from Owner's address
+        vm.prank(fundMe.getOwner()); //telling to do next transaction from Owner's address
         fundMe.withdraw(); //calling withdraw function from fundMe contract
 
         //assert
-        uint256 endingOwnerBalance = fundMe.GetOwner().balance; //now storing balance of owner after withdraw happens
+        uint256 endingOwnerBalance = fundMe.getOwner().balance; //now storing balance of owner after withdraw happens
         uint256 endingFundMeBalance = address(fundMe).balance; //now storing balance of fundMe contract after withdraw happens
 
         assertEq(endingFundMeBalance, 0); //checking if ending balance of FundMeBalance is 0, if yes then test passed, if not then test failed
@@ -101,18 +101,18 @@ contract FundMeTest is Test {
             fundMe.fund{value: SEND_VALUE}();
         }
 
-        uint256 startingOwnerBalance = fundMe.GetOwner().balance; //starting balance of owner before withdraw happens
+        uint256 startingOwnerBalance = fundMe.getOwner().balance; //starting balance of owner before withdraw happens
         uint256 startingFundMeBalance = address(fundMe).balance; //starting balance of fundMe contract before withdraw happens
 
         //Act
 
-        vm.startPrank(fundMe.GetOwner()); //telling to do next tx from owner's address
+        vm.startPrank(fundMe.getOwner()); //telling to do next tx from owner's address
         fundMe.withdraw(); //calling withdraw function from fundMe contract to withdraw all funds
         vm.stopPrank(); //telling to stop doing next tx from owner's address, now next tx will be from default address which is address(this) in this case
 
         //assert
         assert(address(fundMe).balance == 0); //checking if balance of fundMe contract is 0 after withdraw, if yes then test passed, if not then test failed
-        assert(startingFundMeBalance + startingOwnerBalance == fundMe.GetOwner().balance); //checking if starting fundmeBalance+startingOwnerBalance == endingOwnerbalance if yes then test passed, if not then test failed
+        assert(startingFundMeBalance + startingOwnerBalance == fundMe.getOwner().balance); //checking if starting fundmeBalance+startingOwnerBalance == endingOwnerbalance if yes then test passed, if not then test failed
     }
 
     function testWithdrawFromMultipleFundersCheaper() public funded {
@@ -125,17 +125,17 @@ contract FundMeTest is Test {
             fundMe.fund{value: SEND_VALUE}();
         }
 
-        uint256 startingOwnerBalance = fundMe.GetOwner().balance;
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
         uint256 startingFundMeBalance = address(fundMe).balance;
 
         //Act
 
-        vm.startPrank(fundMe.GetOwner());
-        fundMe.withdrawCheaper(); //same as above just calling withdrawCheaper
+        vm.startPrank(fundMe.getOwner());
+        fundMe.withdraw(); //same as above just calling withdraw
         vm.stopPrank();
 
         //assert
         assert(address(fundMe).balance == 0);
-        assert(startingFundMeBalance + startingOwnerBalance == fundMe.GetOwner().balance);
+        assert(startingFundMeBalance + startingOwnerBalance == fundMe.getOwner().balance);
     }
 }

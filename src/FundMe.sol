@@ -43,40 +43,19 @@ contract FundMe {
         _; //start piece of code from here, if not reverted by above condition
     }
 
-    function withdrawCheaper() public onlyOwner {
-        uint256 fundersLength = s_funders.length; //
+    function withdraw() public onlyOwner {
+        uint256 fundersLength = s_funders.length; //storing it once function is called
 
-        for (
-            uint256 funderIndex = 0; //Reading from storage after each loop is expensive, so we stored it in a memory variable and the loop reads from it only once and stores it in stack (temp storage) which saves gas
-            funderIndex < fundersLength;
-            funderIndex++
-        ) {
-            address funder = s_funders[funderIndex]; //going through each index of funders array and storing address it gives in in funder through each iteration
-            s_addressToAmountFunded[funder] = 0; //clearing the amount that funder funded
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++){
+            address funder = s_funders[funderIndex]; //going through index of funders array and storing address it gives in funder through each iteration
+            s_addressToAmountFunded[funder] = 0; //clearing the amount that this funder has funded
         }
 
-        s_funders = new address[](0); //overwriting array with new empty
+        s_funders = new address[](0); //overwriting array with new empty one
         (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}(""); //this contract's all balance being transfer to msg.sender (owner)
         require(callSuccess, "Call failed"); //revert everything above incase failed
     }
 
-    function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
-            address funder = s_funders[funderIndex];
-            s_addressToAmountFunded[funder] = 0;
-        }
-        s_funders = new address[](0);
-        // // transfer
-        // payable(msg.sender).transfer(address(this).balance);
-
-        // // send
-        // bool sendSuccess = payable(msg.sender).send(address(this).balance);
-        // require(sendSuccess, "Send failed");
-
-        // call
-        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
-        require(callSuccess, "Call failed");
-    }
     // Explainer from: https://solidity-by-example.org/fallback/
     // Ether is sent to contract
     //      is msg.data empty?
@@ -97,11 +76,11 @@ contract FundMe {
         fund();
     }
 
-    function GetAddressToAmountFunded(address FundingAddress) external view returns (uint256) {
+    function getAddressToAmountFunded(address FundingAddress) external view returns (uint256) {
         return s_addressToAmountFunded[FundingAddress];
     }
 
-    function GetFunders(uint256 index) external view returns (address) {
+    function getFunders(uint256 index) external view returns (address) {
         return s_funders[index];
     }
 
@@ -109,16 +88,8 @@ contract FundMe {
         return s_priceFeed;
     }
 
-    function GetOwner() external view returns (address) {
+    function getOwner() external view returns (address) {
         return i_owner;
     }
 }
 
-// Concepts we didn't cover yet (will cover in later sections)
-// 1. Enum
-// 2. Events
-// 3. Try / Catch
-// 4. Function Selector
-// 5. abi.encode / decode
-// 6. Hash with keccak256
-// 7. Yul / Assembly
