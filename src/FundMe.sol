@@ -5,6 +5,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 import {PriceConverter} from "./PriceConverter.sol";
 
 error FundMe__NotOwner(); //creating custom error
+error FundMe__InvalidPriceFeed(); 
 
 contract FundMe {
     using PriceConverter for uint256; //uint256 have all functions of PriceConvertor.sol
@@ -14,9 +15,10 @@ contract FundMe {
 
     address private immutable i_owner; /*owner of contract, immutable cannot be changed after deployment */
     uint256 public constant MINIMUM_USD = 5e18; // 5e18 == 5,000,000,000,000,000,000 which is gwei value for 5 ether
-    AggregatorV3Interface public s_priceFeed; // pricefeed variable in storage
+    AggregatorV3Interface private s_priceFeed; // should be private
 
     constructor(address priceFeed) {
+        if (priceFeed == address(0)) revert FundMe__InvalidPriceFeed(); // validation 
         //asking for pricefeed address even before deployment of contract
         i_owner = msg.sender; //setting owner as the one who deploys the contract
         s_priceFeed = AggregatorV3Interface(priceFeed); // //storing pricefeed in storage variable
@@ -100,6 +102,10 @@ contract FundMe {
 
     function GetFunders(uint256 index) external view returns (address) {
         return s_funders[index];
+    }
+
+    function getPriceFeed() external view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 
     function GetOwner() external view returns (address) {
